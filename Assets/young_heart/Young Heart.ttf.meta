@@ -1,0 +1,25 @@
+fileFormatVersion: 2
+guid: 4099c41a8d2e3874a8a67d0a03825d06
+timeCreated: 1540599733
+licenseType: Free
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Young Heart
+  fontNames:
+  - Young Heart
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 87e55017d47b92849a8f8d90e317fc96, type: 3}
+  - {fileID: 12800000, guid: 5a4be329cadcf1346b1cc545149cc258, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
