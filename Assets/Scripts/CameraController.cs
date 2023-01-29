@@ -2,27 +2,52 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraController : MonoBehaviour {
+public class CameraController : MonoBehaviour
+{
 
-	public enum RotationAxes { MouseXAndY = 0, MouseX = 1, MouseY = 2 }
-	public RotationAxes axes = RotationAxes.MouseXAndY;
-	public float sensitivityX ;
-	public float sensitivityY ;
-	public float minimumX = -360F;
-	public float maximumX = 360F;
-	public float minimumY = -60F;
-	public float maximumY = 60F;
-	float rotationY = 0F;
+    public enum RotationAxes { MouseXAndY = 0, MouseX = 1, MouseY = 2 }
+    public RotationAxes axes = RotationAxes.MouseXAndY;
+    public float sensitivityX;
+    public float sensitivityY;
+    public float minimumX = -360F;
+    public float maximumX = 360F;
+    public float minimumY = -60F;
+    public float maximumY = 60F;
+    float rotationY = 0F;
 
-	void Awake(){
+    void Awake()
+    {
 
-		sensitivityX = PlayerPrefs.GetFloat ("Sensitivity", 15f);
-		sensitivityY = PlayerPrefs.GetFloat ("Sensitivity", 15f);
-	}
+        sensitivityX = PlayerPrefs.GetFloat("Sensitivity", 15f);
+        sensitivityY = PlayerPrefs.GetFloat("Sensitivity", 15f);
+    }
 
-	void Update ()
-	{
-		if (axes == RotationAxes.MouseXAndY)
+    void FixedUpdate()
+    {
+        switch (axes)
+        {
+            case RotationAxes.MouseXAndY:
+                float rotationX = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * sensitivityX;
+
+                rotationY += Input.GetAxis("Mouse Y") * sensitivityY;
+                rotationY = Mathf.Clamp(rotationY, minimumY, maximumY);
+
+                transform.localEulerAngles = new Vector3(-rotationY, rotationX, 0);
+                break;
+
+            case RotationAxes.MouseX:
+                transform.Rotate(0, Input.GetAxis("Mouse X") * sensitivityX, 0);
+                break;
+
+            case RotationAxes.MouseY:
+                rotationY += Input.GetAxis("Mouse Y") * sensitivityY;
+                rotationY = Mathf.Clamp(rotationY, minimumY, maximumY);
+
+                transform.localEulerAngles = new Vector3(-rotationY, transform.localEulerAngles.y, 0);
+                break;
+        }
+
+        /*if (axes == RotationAxes.MouseXAndY)
 		{
 			float rotationX = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * sensitivityX;
 
@@ -41,11 +66,11 @@ public class CameraController : MonoBehaviour {
 			rotationY = Mathf.Clamp (rotationY, minimumY, maximumY);
 
 			transform.localEulerAngles = new Vector3(-rotationY, transform.localEulerAngles.y, 0);
-		}
+		}*/
 
-		sensitivityX = PlayerPrefs.GetFloat ("Sensitivity");
-		sensitivityY = PlayerPrefs.GetFloat ("Sensitivity");
-	}
-		
+        sensitivityX = PlayerPrefs.GetFloat("Sensitivity");
+        sensitivityY = PlayerPrefs.GetFloat("Sensitivity");
+    }
+
 
 }

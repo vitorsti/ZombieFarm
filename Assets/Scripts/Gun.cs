@@ -3,128 +3,186 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Gun : MonoBehaviour {
+public class Gun : MonoBehaviour
+{
+    public Recoil recoil;
+    public Text subtitle;
+    public int damage = 10;
+    public float range = 100.0f;
+    public float fireRate = 15f;
+    public Vector3 hipGunPosition, adsGunPosition;
+    public bool aiming;
+    public GameObject barrelEnd;
+    public float adsTime;
+    //public float recoil = 5f;
+    int originalDmage;
+    bool nuke;
+    public GameObject Nuke;
 
-	public Text subtitle;
-	public int damage = 10;
-	int originalDmage;
-	bool nuke;
-	public GameObject Nuke;
-	public float range = 100.0f;
-	public float fireRate = 15f;
-	//public float impactForce = 5.0f;
-	public int removeAmmo = 1;
-	bool automaticShoot;
-	public AudioSource gunShoot;
-	private AudioClip clip;
+    //public float impactForce = 5.0f;
+    public int removeAmmo = 1;
+    bool automaticShoot;
+    public AudioSource gunShoot;
+    private AudioClip clip;
 
-	Ammo ammo;
+    Ammo ammo;
 
-	public ParticleSystem muzzleFlash;
-	//public GameObject impactEffect;
+    public ParticleSystem muzzleFlash;
+    //public GameObject impactEffect;
 
-	private float nextTimeToFire = 0f;
+    private float nextTimeToFire = 0f;
 
-	public Camera cam;
+    public Camera cam;
 
-	void Awake(){
+    void Awake()
+    {
 
-		ammo = FindObjectOfType<Ammo> ();
-		originalDmage = damage;
+        ammo = FindObjectOfType<Ammo>();
+        originalDmage = damage;
+        aiming = false;
+        //cam = FindObjectOfType<Camera> ();
+        //gunShoot = GetComponent<AudioSource> ();
+    }
 
-		//cam = FindObjectOfType<Camera> ();
-		//gunShoot = GetComponent<AudioSource> ();
-	}
+    // Use this for initialization
+    void Start()
+    {
 
-	// Use this for initialization
-	void Start () {
+        automaticShoot = false;
+    }
 
-		automaticShoot = false;
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    // Update is called once per frame
+    void Update()
+    {
 
-			
-		if ((Input.GetButtonDown ("Fire1") && Time.time >= nextTimeToFire ) && ammo.clip > 0 && automaticShoot == false) {
 
-				nextTimeToFire = Time.time + 1f / fireRate;
-				Shoot ();
-				shootSound ();
-				ammo.RemoveAmmo (removeAmmo);
-			}
+        if ((Input.GetButtonDown("Fire1") && Time.time >= nextTimeToFire) && ammo.clip > 0 && automaticShoot == false)
+        {
 
-		if ((Input.GetButton ("Fire1") && Time.time >= nextTimeToFire ) && ammo.clip > 0 && automaticShoot) {
+            nextTimeToFire = Time.time + 1f / fireRate;
+            Shoot();
+            shootSound();
+            ammo.RemoveAmmo(removeAmmo);
+        }
 
-			nextTimeToFire = Time.time + 1f / fireRate;
-			Shoot ();
-			shootSound ();
-			ammo.RemoveAmmo (removeAmmo);
-		}
+        if ((Input.GetButton("Fire1") && Time.time >= nextTimeToFire) && ammo.clip > 0 && automaticShoot)
+        {
 
-		if ((Input.GetButtonDown ("Fire2") && nuke == true)){
+            nextTimeToFire = Time.time + 1f / fireRate;
+            Shoot();
+            shootSound();
+            ammo.RemoveAmmo(removeAmmo);
+        }
 
-			Instantiate (Nuke, new Vector3 (0, 1, 0), Quaternion.identity);
-		}
-	}
+        if (Input.GetButtonDown("Fire2"))
+        {
+            aiming = true;
+            Aiming();
+        }
 
-	void Shoot(){
+        if (Input.GetButtonUp("Fire2"))
+        {
+            aiming = false;
+            Aiming();
+        }
 
-		muzzleFlash.Play ();
 
-		RaycastHit hit;
+        if ((Input.GetKeyDown(KeyCode.N) && nuke == true))
+        {
 
-		if (Physics.Raycast (cam.transform.position, cam.transform.forward, out hit, range)) {
+            Instantiate(Nuke, new Vector3(0, 1, 0), Quaternion.identity);
+        }
 
-			//print (hit.transform.name);
 
-			DamageToTake damageToTake = hit.transform.GetComponent<DamageToTake> ();
+    }
+    void Aiming()
+    {
+        //Vector3 currtentGunPosition = this.gameObject.transform.localPosition;
+        //Debug.Log(currtentGunPosition);
+        if (aiming)
+        {
+            
+            transform.localPosition = Vector3.Lerp(adsGunPosition, hipGunPosition, adsTime * Time.deltaTime);
+            cam.fieldOfView = 30;
+            
+        }
+        else
+        {
+            
+            transform.localPosition = Vector3.Lerp(hipGunPosition, adsGunPosition, adsTime * Time.deltaTime);
+            cam.fieldOfView = 60;
+            //this.gameObject.transform.localPosition = hipGunPosition;
+        }
+    }
+    void Shoot()
+    {
 
-			if (damageToTake != null) {
+        muzzleFlash.Play();
+        Vector3 startPosi = new Vector3(cam.transform.position.x, cam.transform.position.y, barrelEnd.transform.position.z);
+        RaycastHit hit;
+        Debug.DrawRay(startPosi, cam.transform.forward * range, Color.red, 0.1f, false);
+        if (Physics.Raycast(startPosi, cam.transform.forward, out hit, range))
+        {
 
-				damageToTake.takeDamage (damage);
-				//print (damageToTake.currentHealth);
-			}
+            print(hit.transform.name);
 
-			/*if (hit.rigidbody != null) {
+
+            DamageToTake damageToTake = hit.transform.GetComponent<DamageToTake>();
+
+            if (damageToTake != null)
+            {
+
+                damageToTake.takeDamage(damage);
+                //print (damageToTake.currentHealth);
+            }
+
+            /*if (hit.rigidbody != null) {
 
 				hit.rigidbody.AddForce (-hit.normal * impactForce);
 			}*/
 
-			/*GameObject impact = Instantiate (impactEffect, hit.point, Quaternion.LookRotation (hit.normal));
+            /*GameObject impact = Instantiate (impactEffect, hit.point, Quaternion.LookRotation (hit.normal));
 			Destroy (impact, 1f);*/
-		}
-	}
+        }
 
-	void shootSound(){
-		//gunShoot = GetComponent<AudioSource> ();
-		clip = gunShoot.clip;
-		gunShoot.PlayOneShot (clip);
+        recoil.RecoilFire();
+    }
 
-		if(GameManager.language == 1)
-			subtitle.text = "[Som de tiro]";
-		else
-			subtitle.text = "[Shoot Sounds]";
-	}
+    void shootSound()
+    {
+        //gunShoot = GetComponent<AudioSource> ();
+        clip = gunShoot.clip;
+        gunShoot.PlayOneShot(clip);
 
-	public void ResetDamage(){
+        if (GameManager.language == 1)
+            subtitle.text = "[Som de tiro]";
+        else
+            subtitle.text = "[Shoot Sounds]";
+    }
 
-		damage = originalDmage;
-	}
+    public void ResetDamage()
+    {
 
-	public void AutomaticShootOff(){
-		automaticShoot = false;
-	}
+        damage = originalDmage;
+    }
 
-	public void AutomaticShootOn(){
-		automaticShoot = true;
-	}
+    public void AutomaticShootOff()
+    {
+        automaticShoot = false;
+    }
 
-	public void NukeOn(){
-		nuke = true;
-	}
+    public void AutomaticShootOn()
+    {
+        automaticShoot = true;
+    }
 
-	public void NukeOff(){
-		nuke = false;
-	}
+    public void NukeOn()
+    {
+        nuke = true;
+    }
+
+    public void NukeOff()
+    {
+        nuke = false;
+    }
 }

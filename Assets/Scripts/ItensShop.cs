@@ -117,7 +117,7 @@ public class ItensShop : MonoBehaviour {
 			if(GameManager.language == 1)
 				text.text = ("Você já tem esse item");
 			else
-				text.text = ("You already have this iten");
+				text.text = ("You already have this item");
 			return;
 		}
 			
