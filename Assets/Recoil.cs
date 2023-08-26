@@ -11,12 +11,16 @@ public class Recoil : MonoBehaviour
     //HipFire recoil
     [Header("HipFire recoil")]
     [SerializeField]
-    float recoilX; float recoilY; float recoilZ;
+    float recoilX;
+    [SerializeField] float recoilY;
+    [SerializeField] float recoilZ;
 
     //ADS recoil
     [Header("ADS recoil")]
     [SerializeField]
-    float adsRecoilX; float adsRecoilY; float adsRecoilZ;
+    float adsRecoilX;
+    [SerializeField] float adsRecoilY;
+    [SerializeField] float adsRecoilZ;
 
     //Settings
     [SerializeField]

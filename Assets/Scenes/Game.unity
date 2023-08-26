@@ -21732,7 +21732,11 @@ MonoBehaviour:
   gun: {fileID: 331029015}
   aim: 0
   recoilX: -2
+  recoilY: 2
+  recoilZ: 0.35
   adsRecoilX: 0
+  adsRecoilY: 0
+  adsRecoilZ: 0
   snappiness: 6
   returnSpeed: 2
 --- !u!1 &1597331077
