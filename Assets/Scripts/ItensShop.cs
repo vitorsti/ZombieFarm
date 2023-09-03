@@ -64,34 +64,40 @@ public class ItensShop : MonoBehaviour {
 
 		if (Input.GetKeyDown (KeyCode.E ) && nearTree) {
 
-			switch (itenType) {
-			case ItenType.DoubleDamage:
-				DoubleDamage ();
-				break;
-			case ItenType.HigherJump:
-				HigherJump ();
-				break;
-			case ItenType.HealthUpgrade:
-				ResetHealth ();
-				break;
-			case ItenType.Nuke:
-				Nuke ();
-				break;
-			case ItenType.AutomaticShoot:
-				AutomaticShoot ();
-				break;
-			case ItenType.NPC:
-				NPC ();
-				break;
-			case ItenType.DoubleCoins:
-				DoubleCoins ();
-				break;
-			case ItenType.InfiniteAmmo:
-				InfiniteAmmo ();
-				break;
-			}
+			Shop();
 		}
 			
+	}
+
+	void Shop()
+    {
+		switch (itenType)
+		{
+			case ItenType.DoubleDamage:
+				DoubleDamage();
+				break;
+			case ItenType.HigherJump:
+				HigherJump();
+				break;
+			case ItenType.HealthUpgrade:
+				ResetHealth();
+				break;
+			case ItenType.Nuke:
+				Nuke();
+				break;
+			case ItenType.AutomaticShoot:
+				AutomaticShoot();
+				break;
+			case ItenType.NPC:
+				NPC();
+				break;
+			case ItenType.DoubleCoins:
+				DoubleCoins();
+				break;
+			case ItenType.InfiniteAmmo:
+				InfiniteAmmo();
+				break;
+		}
 	}
 
 	//Buy

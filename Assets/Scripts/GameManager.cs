@@ -24,6 +24,8 @@ public class GameManager : MonoBehaviour
     AudioSource nextWaveAudio;
     CameraController[] cam;
     Gun gun;
+    [SerializeField]
+    bool enableSpawwns;
 
     // Use this for initialization
     void Awake()
@@ -40,7 +42,7 @@ public class GameManager : MonoBehaviour
         cam = FindObjectsOfType<CameraController>();
 
         everyFiveWaves = waveNumber;
-        gun.enabled = true;
+        //gun.enabled = true;
         subtitle = PlayerPrefs.GetInt("Subtitle");
 
         if (subtitle == 1)
@@ -57,50 +59,53 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        if (enableSpawwns)
+        {
+            if (language == 1)
+                hordaText.text = "Noite: " + waveNumber;
+            else
+                hordaText.text = "Night: " + waveNumber;
 
-        if (language == 1)
-            hordaText.text = "Noite: " + waveNumber;
-        else
-            hordaText.text = "Night: " + waveNumber;
-
-        spawns[Random.Range(0, spawns.Count)].SetActive(true);
+            spawns[Random.Range(0, spawns.Count)].SetActive(true);
+        }
         //timer = nextWaveDelay;
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        enemys = GameObject.FindGameObjectsWithTag("Enemy");
-
-        if (enemys.Length == 0)
+        if (enableSpawwns)
         {
-            timer -= Time.deltaTime;
-            if (timer <= 10)
-                sun.SetActive(true);
-            if (timer <= 0)
+            enemys = GameObject.FindGameObjectsWithTag("Enemy");
+
+            if (enemys.Length == 0)
             {
-                timer = 0;
-                ChangeHorde();
+                timer -= Time.deltaTime;
+                if (timer <= 10)
+                    sun.SetActive(true);
+                if (timer <= 0)
+                {
+                    timer = 0;
+                    ChangeHorde();
+                    timer = nextWaveDelay;
+                }
+            }
+            else
+            {
+                sun.SetActive(false);
                 timer = nextWaveDelay;
             }
-        }
-        else
-        {
-            sun.SetActive(false);
-            timer = nextWaveDelay;
-        }
 
-        foreach (GameObject i in spawns)
-        {
-
-            if (i.activeSelf == true)
+            foreach (GameObject i in spawns)
             {
-                spawns.Remove(i);
-                spawnsAtivados.Add(i);
+
+                if (i.activeSelf == true)
+                {
+                    spawns.Remove(i);
+                    spawnsAtivados.Add(i);
+                }
             }
         }
-
         if (Input.GetKeyDown(KeyCode.P) || Input.GetKeyDown(KeyCode.Escape))
         {
             pause = !pause;
@@ -158,7 +163,19 @@ public class GameManager : MonoBehaviour
             //image.SetActive (true);
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
-            gun.enabled = false;
+            if (gun != null)
+            {
+
+                gun.enabled = false;
+            }
+            else
+            {
+                gun = FindObjectOfType<Gun>();
+                if (gun == null)
+                    Debug.Log("cant find gun");
+                else
+                    gun.enabled = false;
+            }
             pauseScreen.SetActive(true);
 
             foreach (CameraController i in cam)

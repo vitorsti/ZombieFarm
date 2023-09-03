@@ -57,6 +57,8 @@ public class GameOverScreen : MonoBehaviour {
 		
 		PlayerPrefs.SetFloat("Sensitivity", sensitivity);
 		PlayerPrefs.Save();
+
+		CameraController.instance.SetSensitivity();
 	}
 
 	public void Quit (){

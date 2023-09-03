@@ -26,3 +26,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/EnglishTeste.unity
     guid: 01a2856b6b05a0643a7f9a9189192122
+  - enabled: 1
+    path: Assets/Scenes/NetWorkTest.unity
+    guid: 3e6781a6c7e28224bbcc000ccd519b09
+  m_configObjects: {}

@@ -3,64 +3,83 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyBehavior : MonoBehaviour {
+public class EnemyBehavior : MonoBehaviour
+{
 
-	public float speed;
-	public Transform target;
-	public GameObject gb;
+    public float speed;
+    public Transform target;
+    public GameObject gb;
 
-	public int dealDamage = 10;
+    public int dealDamage = 10;
 
-	public AudioSource audioSource;
-	private AudioClip clip;
-	public NavMeshAgent agent;
-	public PlayerHealth playerHealth;
-	public bool zombieType;
+    public AudioSource audioSource;
+    private AudioClip clip;
+    public NavMeshAgent agent;
+    public PlayerHealth playerHealth;
+    public bool zombieType;
+    [SerializeField]
+    bool enableAi;
+    Rigidbody rb;
 
-	Rigidbody rb;
+    void Awake()
+    {
 
-	void Awake(){
+#if !UNITY_EDITOR
+enableAi = true;
+#endif
+        if (enableAi)
+        {
+            agent = GetComponent<NavMeshAgent>();
+            rb = GetComponent<Rigidbody>();
+            gb = GameObject.FindGameObjectWithTag("Player");
+            audioSource = GetComponent<AudioSource>();
+            target = gb.transform;
+            playerHealth = FindObjectOfType<PlayerHealth>();
 
-		agent = GetComponent<NavMeshAgent> ();
-		rb = GetComponent<Rigidbody> ();
-		gb = GameObject.FindGameObjectWithTag ("Player");
-		audioSource = GetComponent<AudioSource> ();
-		target = gb.transform;
-		playerHealth = FindObjectOfType<PlayerHealth> ();
+            if (this.gameObject.name == "ZumbiRed" || this.gameObject.name == "ZumbiRed(Clone)" || this.gameObject.name == "Boss" || this.gameObject.name == "Boss(Clone)")
+            {
+                zombieType = true;
+                agent.enabled = true;
+            }
+            else
+            {
+                agent.enabled = false;
+                zombieType = false;
+            }
+        }
+    }
 
-		if (this.gameObject.name == "ZumbiRed" || this.gameObject.name == "ZumbiRed(Clone)" || this.gameObject.name == "Boss" || this.gameObject.name == "Boss(Clone)") {
-			zombieType = true;
-			agent.enabled = true;
-		} else {
-			agent.enabled = false;
-			zombieType = false;
-		}
-	} 
+    // Use this for initialization
+    void Start()
+    {
 
-	// Use this for initialization
-	void Start () {
+    }
 
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    // Update is called once per frame
+    void Update()
+    {
 
+        if (enableAi)
+        {
+            if (zombieType)
+                agent.SetDestination(target.position);
+            else
+            {
+                transform.LookAt(target);
+                transform.position += transform.forward * speed * Time.deltaTime;
+            }
+        }
 
-		if (zombieType)
-			agent.SetDestination (target.position);
-		else {
-			transform.LookAt (target);
-			transform.position += transform.forward * speed * Time.deltaTime;
-		}
+    }
 
-	}
+    void OnCollisionEnter(Collision other)
+    {
 
-	void OnCollisionEnter (Collision other){
+        if (other.gameObject.tag == "Player")
+        {
 
-		if (other.gameObject.tag == "Player") {
+            playerHealth.takeDamage(dealDamage);
+        }
+    }
 
-			playerHealth.takeDamage (dealDamage);
-		}
-	}
-		
 }

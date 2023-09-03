@@ -10,7 +10,8 @@ public class Gun : MonoBehaviour
     public int damage = 10;
     public float range = 100.0f;
     public float fireRate = 15f;
-    public Vector3 hipGunPosition, adsGunPosition;
+    public Vector3 hipGunPosition, adsGunPosition; 
+    public Quaternion hipGunRotation,  adsGunRotation; 
     public bool aiming;
     public GameObject barrelEnd;
     public float adsTime;
@@ -101,15 +102,17 @@ public class Gun : MonoBehaviour
         //Debug.Log(currtentGunPosition);
         if (aiming)
         {
-            
+
             transform.localPosition = Vector3.Lerp(adsGunPosition, hipGunPosition, adsTime * Time.deltaTime);
+            transform.localRotation = adsGunRotation;
             cam.fieldOfView = 30;
-            
+
         }
         else
         {
-            
+
             transform.localPosition = Vector3.Lerp(hipGunPosition, adsGunPosition, adsTime * Time.deltaTime);
+            transform.localRotation = hipGunRotation;
             cam.fieldOfView = 60;
             //this.gameObject.transform.localPosition = hipGunPosition;
         }
@@ -118,10 +121,10 @@ public class Gun : MonoBehaviour
     {
 
         muzzleFlash.Play();
-        Vector3 startPosi = new Vector3(cam.transform.position.x, cam.transform.position.y, barrelEnd.transform.position.z);
+        //Vector3 startPosi = new Vector3(cam.transform.position.x, cam.transform.position.y, barrelEnd.transform.position.z);
         RaycastHit hit;
-        Debug.DrawRay(startPosi, cam.transform.forward * range, Color.red, 0.1f, false);
-        if (Physics.Raycast(startPosi, cam.transform.forward, out hit, range))
+        Debug.DrawRay(barrelEnd.transform.position, barrelEnd.transform.forward * range, Color.red, 0.1f, false);
+        if (Physics.Raycast(barrelEnd.transform.position, barrelEnd.transform.forward, out hit, range))
         {
 
             print(hit.transform.name);
@@ -154,10 +157,13 @@ public class Gun : MonoBehaviour
         clip = gunShoot.clip;
         gunShoot.PlayOneShot(clip);
 
-        if (GameManager.language == 1)
+        if (GameManager.language == 1 && subtitle != null)
             subtitle.text = "[Som de tiro]";
         else
-            subtitle.text = "[Shoot Sounds]";
+        {
+            if (subtitle != null)
+                subtitle.text = "[Shoot Sounds]";
+        }
     }
 
     public void ResetDamage()
